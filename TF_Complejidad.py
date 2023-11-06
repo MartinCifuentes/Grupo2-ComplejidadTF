@@ -23,6 +23,29 @@ for i in range(len(df)):
          graph[node1][node2] = distancia
          graph[node2] = {} # Agregar el nodo inverso
 
+# Implementación de Dijkstra
+def dijkstra(graph, start, end):
+     distances = {node: float('inf') for node in graph}
+     distances[start] = 0
+     previous_nodes = {}
+     nodes_to_visit = [(start, 0)]
+
+     while nodes_to_visit:
+         current_node, current_distance = heapq.heappop(nodes_to_visit)
+         if current_distance > distances[current_node]:
+            continue
+         for neighbor, weight in graph[current_node].items():
+             distance = current_distance + weight
+             if distance < distances[neighbor]:
+                 distances[neighbor] = distance
+                 previous_nodes[neighbor] = current_node
+                 heapq.heappush(nodes_to_visit, (neighbor, distance))
+     path = []
+     while end:
+         path.insert(0, end)
+         end = previous_nodes.get(end)
+     return path
+
 for node1 in graph:
     for node2, weight in graph[node1].items():
         lat1, lon1 = df.loc[df['Direcciones'] == node1, ['Latitude', 'Longitude']].values[0]
